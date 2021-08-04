@@ -88,7 +88,7 @@ class ProductController extends Controller
         $data = Product::all();
         
         return response([
-            'data' => $data->pluck('price')->implode(', '),
+            'data' => [$data->pluck('price')->implode(', ')],
         ]);
     }
 
@@ -111,5 +111,14 @@ class ProductController extends Controller
         return response([
             'data' => $products,
         ]);
+    }
+
+    public function storeRandom($count)
+    {   
+        $seeder = new \Database\Seeders\ProductSeeder();
+
+        $seeder->run($count);
+        
+        return Product::all();
     }
 }
