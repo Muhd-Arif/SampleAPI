@@ -25,12 +25,14 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/products/prices', [ProductController::class, 'oneArray']);
 Route::get('/products/prices_name', [ProductController::class, 'twoArray']);
 
+
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{id}', [ProductController::class, 'show']);
 Route::get('/products/search/{name}', [ProductController::class, 'search']);
 
-Route::post('/products/random/{count}', [ProductController::class, 'storeRandom']);
-Route::post('/users/random/{count}', [UserController::class, 'storeRandom']);
+Route::get('/products/random/{count}', [ProductController::class, 'storeRandom']);
+Route::get('/users/random/{count}', [UserController::class, 'storeRandom']);
+
 
 
 // Protected route

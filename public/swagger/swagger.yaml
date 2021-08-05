@@ -1,0 +1,446 @@
+openapi: 3.0.0
+info:
+  description: This is Laravel Project APis using Sanctum
+  version: 1.0.0
+  title: Laravel Project API's
+servers:
+  # - url: http://127.0.0.1:8000/api
+  #   # description: Optional server description, e.g. Main (production) server
+  # - url: https://127.0.0.1:8000/api
+tags:
+  - name: Auth
+    description: Manage Authorization
+  - name: Product
+    description: Manage Product
+  - name: User
+    description: Manage User
+schemes:
+  - "http"
+  - "https"
+paths:
+  /api/register:
+    post:
+      tags:
+        - Auth
+      summary: Register a user to the database
+      operationId: registerUser
+      requestBody:
+        description: User object that needs to be added to the database
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/User"
+        required: true
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: Invalid input
+          content: {}
+      x-codegen-request-body-name: body
+  /api/login:
+    post:
+      tags:
+        - Auth
+      summary: Logs user into the system
+      operationId: loginUser
+      requestBody:
+        description: User login credentials for login
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginUser"
+        required: true
+      # parameters:
+      #   - name: email
+      #     in: query
+      #     description: The user email for login
+      #     required: true
+      #     schema:
+      #       type: string
+      #   - name: password
+      #     in: query
+      #     description: The password for login in clear text
+      #     required: true
+      #     schema:
+      #       type: string
+      responses:
+        200:
+          description: successful operation
+          # headers:
+          #   X-Rate-Limit:
+          #     description: calls per hour allowed by the user
+          #     schema:
+          #       type: integer
+          #       format: int32
+          #   X-Expires-After:
+          #     description: date in UTC when token expires
+          #     schema:
+          #       type: string
+          #       format: date-time
+          # content:
+          # application/xml:
+          #   schema:
+          #     type: string
+          # application/json:
+          #   schema:
+          #     type: string
+        400:
+          description: Invalid username/password supplied
+          # content: {}
+  /api/logout:
+    post:
+      tags:
+        - Auth
+      summary: Logs out current logged in user
+      operationId: logoutUser
+      responses:
+        default:
+          description: successful operation
+          content: {}
+      security:
+        - bearerAuth: []
+  /api/products:
+    get:
+      tags:
+        - Product
+      summary: View products
+      description: View all products in the database
+      operationId: viewAllProducts
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: Bad request
+    post:
+      tags:
+        - Product
+      summary: Create product
+      description: Create new product
+      operationId: createProduct
+      requestBody:
+        description: Product object that needs to be added to the database
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Product"
+        required: true
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: Invalid input
+          content: {}
+      x-codegen-request-body-name: body
+      security:
+        - bearerAuth: []
+  /api/products/{id}:
+    get:
+      tags:
+        - Product
+      summary: View selected product
+      description: View selected product based on id
+      operationId: viewSelectedProduct
+      parameters:
+        - name: id
+          in: "path"
+          description: "Product id"
+          required: true
+          type: "integer"
+          format: "int64"
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: Invalid Id supplied
+        404:
+          description: Product not found
+    put:
+      tags:
+        - Product
+      summary: Update an existing product
+      description: Update an existing product based on id
+      operationId: updateProduct
+      parameters:
+        - name: id
+          in: "path"
+          description: "Product id"
+          required: true
+          type: "integer"
+          format: "int64"
+      requestBody:
+        description: Product object that needs to be update to the database
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Product"
+        required: true
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: Invalid Id supplied
+        404:
+          description: Product not found
+        405:
+          description: Validation exception
+      x-codegen-request-body-name: body
+      security:
+        - bearerAuth: []
+    delete:
+      tags:
+        - Product
+      summary: Delete an existing product
+      description: Delete an existing product based on id
+      operationId: deleteProduct
+      parameters:
+        - name: id
+          in: "path"
+          description: "Product id"
+          required: true
+          type: "integer"
+          format: "int64"
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: Invalid Id supplied
+        404:
+          description: Product not found
+        405:
+          description: Validation exception
+      x-codegen-request-body-name: body
+      security:
+        - bearerAuth: []
+  /api/products/search/{name}:
+    get:
+      tags:
+        - Product
+      summary: Search Product
+      description: Search Product based on name
+      operationId: searchProduct
+      parameters:
+        - name: name
+          in: "path"
+          description: "Product name"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: successful operation
+          # content:
+          #   application/json:
+          #     schema:
+          #       $ref: "#/components/schemas/Product"
+        400:
+          description: Invalid name supplied
+        404:
+          description: Product not found
+  /api/products/random/{count}:
+    get:
+      tags:
+        - Product
+      summary: Genarate Product
+      description: Genarate random products
+      operationId: generateProduct
+      parameters:
+        - name: count
+          in: "path"
+          description: "Number of products"
+          required: true
+          type: "integer"
+          format: "int64"
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: Bad Request
+  /api/products/prices:
+    get:
+      tags:
+        - Product
+      summary: Get product prices
+      description: Get all product prices and show in one dimensional array
+      operationId: getPrices
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: Bad Request
+  /api/products/prices_name:
+    get:
+      tags:
+        - Product
+      summary: Get product prices & names
+      description: Get all product prices & names and show in two dimensional array
+      operationId: getPricesNames
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: Bad Request
+  /api/users:
+    get:
+      tags:
+        - User
+      summary: View users
+      description: View all users in the database
+      operationId: viewAllUsers
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: Bad request
+      security:
+        - bearerAuth: []
+  /api/users/{id}:
+    get:
+      tags:
+        - User
+      summary: View selected user
+      description: View selected user based on id
+      operationId: viewSelectedUser
+      parameters:
+        - name: id
+          in: "path"
+          description: "User id"
+          required: true
+          type: "integer"
+          format: "int64"
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: Invalid Id supplied
+        404:
+          description: User not found
+      security:
+        - bearerAuth: []
+    put:
+      tags:
+        - User
+      summary: Update an existing user
+      description: Update an existing user based on id
+      operationId: updateUser
+      parameters:
+        - name: id
+          in: "path"
+          description: "User id"
+          required: true
+          type: "integer"
+          format: "int64"
+      requestBody:
+        description: User object that needs to be update to the database
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+        required: true
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: Invalid Id supplied
+        404:
+          description: User not found
+        405:
+          description: Validation exception
+      x-codegen-request-body-name: body
+      security:
+        - bearerAuth: []
+    delete:
+      tags:
+        - User
+      summary: Delete an existing user
+      description: Delete an existing user based on id
+      operationId: deleteUser
+      parameters:
+        - name: id
+          in: "path"
+          description: "User id"
+          required: true
+          type: "integer"
+          format: "int64"
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: Invalid Id supplied
+        404:
+          description: User not found
+        405:
+          description: Validation exception
+      x-codegen-request-body-name: body
+      security:
+        - bearerAuth: []
+  /api/users/random/{count}:
+    get:
+      tags:
+        - User
+      summary: Generate User
+      description: Genarate random users
+      operationId: generateUser
+      parameters:
+        - name: count
+          in: "path"
+          description: "Number of users"
+          required: true
+          type: "integer"
+          format: "int64"
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: Bad Request
+components:
+  securitySchemes:
+    bearerAuth: # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Product:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          description: "Product Name"
+        slug:
+          type: "string"
+          description: "URL Path for Product"
+        description:
+          type: "string"
+          description: "Product description"
+        price:
+          type: "integer"
+          format: "double"
+    User:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          description: "User Name"
+        email:
+          type: "string"
+          format: "email"
+          description: "User Email"
+        password:
+          type: "string"
+          description: "User Password"
+        password_confirmation:
+          type: "string"
+          format: "password"
+          description: "User Password Confirmation"
+    LoginUser:
+      type: "object"
+      properties:
+        email:
+          type: "string"
+          format: "email"
+          description: "User Email"
+        password:
+          type: "string"
+          description: "User Password"
