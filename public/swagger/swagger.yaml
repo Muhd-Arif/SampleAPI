@@ -7,6 +7,13 @@ servers:
   # - url: http://127.0.0.1:8000/api
   #   # description: Optional server description, e.g. Main (production) server
   # - url: https://127.0.0.1:8000/api
+consumes:
+  - application/json
+  - application/xml
+produces:
+  - application/json
+  - application/xml
+  - application/pdf
 tags:
   - name: Auth
     description: Manage Authorization
@@ -14,6 +21,10 @@ tags:
     description: Manage Product
   - name: User
     description: Manage User
+  - name: Local File
+    description: Manage Local File
+  - name: Database File
+    description: Manage Local File
 schemes:
   - "http"
   - "https"
@@ -395,6 +406,205 @@ paths:
           description: successful operation
         400:
           description: Bad Request
+  /api/localfiles:
+    get:
+      tags:
+        - Local File
+      summary: Viewa local files
+      description: View all local files
+      operationId: viewAllLocalFile
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: Bad Request
+    post:
+      tags:
+        - Local File
+      summary: Upload file
+      description: Upload new local file
+      operationId: uploadLocalFile
+      requestBody:
+        description: File that needs to be added
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+        required: true
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: Invalid input
+      x-codegen-request-body-name: body
+  /api/localfiles/{filename}:
+    get:
+      tags:
+        - Local File
+      summary: View selected local file
+      description: View selected local file based on filename
+      operationId: viewSelectLocalFile
+      produce: application/pdf
+      parameters:
+        - name: filename
+          in: "path"
+          description: "file name"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        404:
+          description: File not found
+    delete:
+      tags:
+        - Local File
+      summary: Delete an existing local file
+      description: Delete an existing file based on filename
+      operationId: deleteFile
+      parameters:
+        - name: filename
+          in: "path"
+          description: "File name"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: successful operation
+        404:
+          description: File not found
+      x-codegen-request-body-name: body
+  /api/files:
+    get:
+      tags:
+        - Database File
+      summary: View database files
+      description: View all files from database
+      operationId: viewAllDbFile
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: Bad Request
+    post:
+      tags:
+        - Database File
+      summary: Upload file
+      description: Upload new file to database
+      operationId: uploadDbFile
+      requestBody:
+        description: File details that needs to be added
+        content:
+          # application/json:
+          #   schema:
+          #     $ref: "#/components/schemas/File"
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                name:
+                  type: string
+        required: true
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: Invalid input
+      x-codegen-request-body-name: body
+  /api/files/{id}:
+    get:
+      tags:
+        - Database File
+      summary: View selected db file
+      description: View selected databse file based on id
+      operationId: viewSelectDbFile
+      produce: application/pdf
+      parameters:
+        - name: id
+          in: "path"
+          description: "file id"
+          required: true
+          type: "integer"
+          format: "int64"
+      responses:
+        200:
+          description: successful operation
+          # content:
+          #   application/pdf:
+          #     schema:
+          #       type: string
+          #       format: binary
+        404:
+          description: File not found
+    delete:
+      tags:
+        - Database File
+      summary: Delete an existing db file
+      description: Delete an existing database file based on id
+      operationId: deleteDbFile
+      parameters:
+        - name: id
+          in: "path"
+          description: "File name"
+          required: true
+          type: "integer"
+          format: "int64"
+      responses:
+        200:
+          description: successful operation
+        404:
+          description: File not found
+      x-codegen-request-body-name: body
+    post:
+      tags:
+        - Database File
+      summary: Update database file
+      description: Update database file based on id
+      operationId: updateDbFile
+      parameters:
+        - name: id
+          in: "path"
+          description: "File id"
+          required: true
+          type: "integer"
+          format: "int64"
+      requestBody:
+        description: File object that needs to be update to the database
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                name:
+                  type: string
+                _method:
+                  type: string
+        required: true
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: Invalid Id supplied
+        404:
+          description: File not found
+        405:
+          description: Validation exception
+      x-codegen-request-body-name: body
 components:
   securitySchemes:
     bearerAuth: # arbitrary name for the security scheme
@@ -444,3 +654,9 @@ components:
         password:
           type: "string"
           description: "User Password"
+    File:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          description: "User name"

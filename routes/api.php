@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -25,7 +26,6 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/products/prices', [ProductController::class, 'oneArray']);
 Route::get('/products/prices_name', [ProductController::class, 'twoArray']);
 
-
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{id}', [ProductController::class, 'show']);
 Route::get('/products/search/{name}', [ProductController::class, 'search']);
@@ -33,6 +33,17 @@ Route::get('/products/search/{name}', [ProductController::class, 'search']);
 Route::get('/products/random/{count}', [ProductController::class, 'storeRandom']);
 Route::get('/users/random/{count}', [UserController::class, 'storeRandom']);
 
+
+Route::get('/localfiles', [FileController::class, 'indexLocal']);
+Route::post('/localfiles', [FileController::class, 'uploadLocal']);
+Route::get('/localfiles/{filename}', [FileController::class, 'showLocal']);
+Route::delete('/localfiles/{filename}', [FileController::class, 'destroyLocal']);
+
+Route::get('/files', [FileController::class, 'indexDb']);
+Route::post('/files', [FileController::class, 'uploadDb']);
+Route::get('/files/{id}', [FileController::class, 'showDb']);
+Route::put('/files/{id}', [FileController::class, 'updateDb']);
+Route::delete('/files/{id}', [FileController::class, 'destroyDb']);
 
 
 // Protected route
