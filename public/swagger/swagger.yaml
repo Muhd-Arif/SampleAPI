@@ -16,7 +16,7 @@ produces:
   - application/pdf
 tags:
   - name: Auth
-    description: Manage Authorization
+    description: Manage Authentication
   - name: Product
     description: Manage Product
   - name: User
@@ -65,19 +65,6 @@ paths:
             schema:
               $ref: "#/components/schemas/LoginUser"
         required: true
-      # parameters:
-      #   - name: email
-      #     in: query
-      #     description: The user email for login
-      #     required: true
-      #     schema:
-      #       type: string
-      #   - name: password
-      #     in: query
-      #     description: The password for login in clear text
-      #     required: true
-      #     schema:
-      #       type: string
       responses:
         200:
           description: successful operation
@@ -100,7 +87,7 @@ paths:
           #   schema:
           #     type: string
         400:
-          description: Invalid username/password supplied
+          description: Invalid email/password supplied
           # content: {}
   /api/logout:
     post:
@@ -109,9 +96,98 @@ paths:
       summary: Logs out current logged in user
       operationId: logoutUser
       responses:
-        default:
+        200:
           description: successful operation
-          content: {}
+        400:
+          description: Invalid email supplied
+          # content: {}
+      security:
+        - bearerAuth: []
+  /api/forgot-password:
+    post:
+      tags:
+        - Auth
+      summary: Send forgot password email
+      operationId: forgotPassword
+      requestBody:
+        description: User email to receive link
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+        required: true
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: Invalid email supplied
+  /api/reset-password:
+    post:
+      tags:
+        - Auth
+      summary: Reset user password
+      operationId: resetPassword
+      requestBody:
+        description: User credential to reset password
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                password_confirmation:
+                  type: string
+        required: true
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: Invalid credentials supplied
+          # content: {}
+  /api/email/verification:
+    post:
+      tags:
+        - Auth
+      summary: Send email verification to user
+      operationId: emailVerification
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: Invalid credentials supplied
+          # content: {}
+      security:
+        - bearerAuth: []
+  /api/email/verify-email/{id}/{hash}:
+    get:
+      tags:
+        - Auth
+      summary: Verify user email
+      operationId: verifyEmail
+      parameters:
+        - name: id
+          in: "path"
+          description: "id"
+          required: true
+          type: "string"
+        - name: hash
+          in: "path"
+          description: "hash"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: successful operation
       security:
         - bearerAuth: []
   /api/products:

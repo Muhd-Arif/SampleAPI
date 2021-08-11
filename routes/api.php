@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\PasswordController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,6 +24,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+
+Route::post('/email/verification', [EmailVerificationController::class, 'sendVerificationEmail'])->middleware('auth:sanctum');
+Route::get('/email/verify-email/{id}/{hash}', [EmailVerificationController::class, 'verify'])->middleware('auth:sanctum')->name('verification.verify');
+
+Route::post('/forgot-password', [PasswordController::class, 'forgotPassword']);
+Route::post('/reset-password', [PasswordController::class, 'reset']);
 
 Route::get('/products/prices', [ProductController::class, 'oneArray']);
 Route::get('/products/prices_name', [ProductController::class, 'twoArray']);
@@ -47,7 +55,7 @@ Route::delete('/files/{id}', [FileController::class, 'destroyDb']);
 
 
 // Protected route
-Route::group(['middleware'=> ['auth:sanctum']], function () {
+Route::group(['middleware'=> ['auth:sanctum', 'verified']], function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
     Route::post('/products', [ProductController::class, 'store']);
