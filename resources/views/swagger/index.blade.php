@@ -7,11 +7,11 @@
 
 <body>
     <div id="swagger-ui"></div>
-    <script src="{{asset('public/swagger/jquery-2.1.4.min.js')}}"></script>
-    <script src="{{asset('public/swagger/swagger-bundle.js')}}"></script>
+    <script src="{{asset('swagger/jquery-2.1.4.min.js')}}"></script>
+    <script src="{{asset('swagger/swagger-bundle.js')}}"></script>
     <script type="application/javascript">
         const ui = SwaggerUIBundle({
-        url: "{{ asset('public/swagger/swagger.yaml') }}",
+        url: "{{ asset('swagger/swagger.yaml') }}",
         dom_id: '#swagger-ui',
     });
     </script>
