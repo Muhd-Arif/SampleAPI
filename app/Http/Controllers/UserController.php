@@ -7,45 +7,22 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
         return User::all();
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         return User::findOrFail($id);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
@@ -55,12 +32,16 @@ class UserController extends Controller
         return $user;
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    public function updateUserLevel(Request $request, $id)
+    {
+       
+        $user = User::findOrFail($id);
+
+        $user->update(['user_level' => $request->user_level]);
+
+        return $user;
+    }
+
     public function destroy($id)
     {
         return User::destroy($id);
@@ -69,6 +50,15 @@ class UserController extends Controller
     public function storeRandom($count)
     {   
         $seeder = new \Database\Seeders\UserSeeder();
+
+        $seeder->run($count);
+        
+        return User::all();
+    }
+
+    public function storeAdminRandom($count)
+    {   
+        $seeder = new \Database\Seeders\SuperAdminSeeder();
 
         $seeder->run($count);
         

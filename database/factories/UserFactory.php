@@ -28,7 +28,20 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => bcrypt('secret'), // password
             // 'remember_token' => Str::random(10),
+            'user_level' => 'normal'
         ];
+    }
+
+    public function withSuperAdmin()
+    {
+        return $this->state([
+            'name' => $this->faker->name(),
+            'email' => $this->faker->unique()->safeEmail(),
+            'email_verified_at' => now(),
+            'password' => bcrypt('secret'), // password
+            // 'remember_token' => Str::random(10),
+            'user_level' => 'superadmin'
+        ]);
     }
 
     /**

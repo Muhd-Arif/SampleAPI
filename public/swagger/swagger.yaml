@@ -467,8 +467,8 @@ paths:
     get:
       tags:
         - User
-      summary: Generate User
-      description: Genarate random users
+      summary: Generate Normal User
+      description: Genarate random normal users
       operationId: generateUser
       parameters:
         - name: count
@@ -482,6 +482,62 @@ paths:
           description: successful operation
         400:
           description: Bad Request
+  /api/superadmin/random/{count}:
+    get:
+      tags:
+        - User
+      summary: Generate SuperAdmin user
+      description: Genarate random superadmin users
+      operationId: generateSuperAdmin
+      parameters:
+        - name: count
+          in: "path"
+          description: "Number of superadmin"
+          required: true
+          type: "integer"
+          format: "int64"
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: Bad Request
+  /api/users/{id}/userlevel:
+    put:
+      tags:
+        - User
+      summary: Update user level for existing user
+      description: Update an existing user level based on user id
+      operationId: updateUserLevel
+      parameters:
+        - name: id
+          in: "path"
+          description: "User id"
+          required: true
+          type: "integer"
+          format: "int64"
+      requestBody:
+        description: User object that needs to be update to the database
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_level:
+                  type: string
+                  description: user level (superadmin/admin/normal)
+        required: true
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: Invalid Id supplied
+        404:
+          description: User not found
+        405:
+          description: Validation exception
+      x-codegen-request-body-name: body
+      security:
+        - bearerAuth: []
   /api/localfiles:
     get:
       tags:
