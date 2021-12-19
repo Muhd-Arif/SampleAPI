@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddExtensionToFiles extends Migration
+class AddTypeOfUserUsers extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddExtensionToFiles extends Migration
      */
     public function up()
     {
-        Schema::table('files', function (Blueprint $table) {
-            $table->string('extension');
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('user_level');
         });
     }
 
@@ -25,8 +25,8 @@ class AddExtensionToFiles extends Migration
      */
     public function down()
     {
-        Schema::table('files', function (Blueprint $table) {
-            $table->dropColumn('extension');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('user_level');
         });
     }
 }

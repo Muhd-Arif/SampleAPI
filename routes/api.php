@@ -40,6 +40,7 @@ Route::get('/products/search/{name}', [ProductController::class, 'search']);
 
 Route::get('/products/random/{count}', [ProductController::class, 'storeRandom']);
 Route::get('/users/random/{count}', [UserController::class, 'storeRandom']);
+Route::get('/superadmin/random/{count}', [UserController::class, 'storeAdminRandom']);
 
 
 Route::get('/localfiles', [FileController::class, 'indexLocal']);
@@ -58,14 +59,17 @@ Route::delete('/files/{id}', [FileController::class, 'destroyDb']);
 Route::group(['middleware'=> ['auth:sanctum', 'verified']], function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
-    Route::post('/products', [ProductController::class, 'store']);
-    Route::put('/products/{id}', [ProductController::class, 'update']);
-    Route::delete('/products/{id}', [ProductController::class, 'destroy']);
+    Route::post('/products', [ProductController::class, 'store'])->middleware('role:superadmin,admin');;
+    Route::put('/products/{id}', [ProductController::class, 'update'])->middleware('role:superadmin,admin');;
+    Route::delete('/products/{id}', [ProductController::class, 'destroy'])->middleware('role:superadmin,admin');;
 
-    Route::get('/users', [UserController::class, 'index']);
-    Route::get('/users/{id}', [UserController::class, 'show']);
-    Route::put('/users/{id}', [UserController::class, 'update']);
-    Route::delete('/users/{id}', [UserController::class, 'destroy']);
+    Route::get('/users', [UserController::class, 'index'])->middleware('role:superadmin,admin');
+    Route::get('/users/{id}', [UserController::class, 'show'])->middleware('role:superadmin,admin');;
+    Route::put('/users/{id}', [UserController::class, 'update'])->middleware('role:superadmin,admin');;
+
+    Route::put('/users/{id}/userlevel', [UserController::class, 'updateUserLevel'])->middleware('role:superadmin');;
+
+    Route::delete('/users/{id}', [UserController::class, 'destroy'])->middleware('role:superadmin');;
     
 });
 
